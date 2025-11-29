@@ -19,3 +19,23 @@ note:
 check logs
 - docker logs evbattery-web -f
 - docker logs evbattery-api -f
+
+
+## How to backup progresql
+step 1
+```
+docker cp dump-2hand_ev_battery_trading-202511262347.dump \
+  evbattery-postgres:/dump.dump
+```
+step 2
+```
+docker exec -it evbattery-postgres sh
+```
+step 3
+```
+pg_restore \
+  -U "$POSTGRES_USER" \
+  -d "$POSTGRES_DB" \
+  --clean --if-exists \
+  /dump.dump
+```
