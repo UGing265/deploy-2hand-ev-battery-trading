@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: evbattery-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  api:
+    image: shiroruct/evbattery-api:latest
+    container_name: evbattery-api
+    env_file: .env
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"     # HOST:CONTAINER -> API ch?y trong container ? 8000
+    restart: unless-stopped
+
+  web:
+    image: shiroruct/evbattery-web:latest
+    container_name: evbattery-web
+    env_file: .env
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"     # HOST:CONTAINER -> Web ch?y ? 3000
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+
